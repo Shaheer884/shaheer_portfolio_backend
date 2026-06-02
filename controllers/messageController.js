@@ -1,4 +1,5 @@
 const Message = require('../models/Message');
+const sendEmail = require('../utils/sendEmail');
 
 // @desc    Submit a contact message
 // @route   POST /api/messages
@@ -13,6 +14,19 @@ exports.sendMessage = async (req, res) => {
       subject,
       message,
     });
+
+    // Send email notification (gracefully handle any errors to avoid blocking DB success)
+    try {
+      await sendEmail({
+        name,
+        email,
+        subject,
+        message,
+      });
+      console.log(`Email notification sent successfully for message from ${email}`);
+    } catch (mailError) {
+      console.error(`Email notification failed to send: ${mailError.message}`);
+    }
 
     res.status(201).json({
       success: true,

@@ -8,6 +8,7 @@ const connectDB = async () => {
 };
 
 const messageRoutes = require('./routes/messageRoutes');
+const projectRoutes = require('./routes/projectRoutes');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/messages', messageRoutes);
+app.use('/api/projects', projectRoutes);
 
 // Base route
 app.get('/', (req, res) => {

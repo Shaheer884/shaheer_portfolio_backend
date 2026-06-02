@@ -19,6 +19,9 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+// Enable pre-flight CORS across-the-board
+app.options('*', cors());
+
 // Routes
 app.use('/api/messages', messageRoutes);
 app.use('/api/projects', projectRoutes);

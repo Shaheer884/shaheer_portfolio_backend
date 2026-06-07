@@ -7,8 +7,8 @@ const DEFAULT_PROJECTS = [
     description: "🚀 Built an AI-Powered Quiz System using the MERN stack that generates MCQs instantly with AI, features a modern responsive UI, real-time scoring, secure authentication, and optimized backend performance.",
     tags: ["MongoDB", "Express.js", "React.js", "Node.js", "Gemini AI"],
     featured: true,
-    githubLink: "https://github.com/Shaheer884",
-    liveLink: "https://demo.com"
+    githubLink: "https://github.com/Shaheer884/AI_Quiz_System_Frontend",
+    liveLink: "https://ai-quiz-system-frontend.vercel.app/register"
   },
   {
     title: "Auction Bidding System",
@@ -55,6 +55,21 @@ exports.getProjects = async (req, res) => {
     if (projects.length === 0) {
       console.log('Seeding default projects to MongoDB...');
       projects = await Project.create(DEFAULT_PROJECTS);
+    } else {
+      // Ensure existing database entry for AI-Based Quiz System is updated if it has outdated links
+      const quizSystem = projects.find(p => p.title === "AI-Based Quiz System");
+      if (quizSystem && (quizSystem.githubLink === "https://github.com/Shaheer884" || quizSystem.liveLink === "https://demo.com")) {
+        console.log('Updating AI-Based Quiz System links in database...');
+        await Project.updateOne(
+          { title: "AI-Based Quiz System" },
+          {
+            githubLink: "https://github.com/Shaheer884/AI_Quiz_System_Frontend",
+            liveLink: "https://ai-quiz-system-frontend.vercel.app/register"
+          }
+        );
+        // Refresh project list after update
+        projects = await Project.find().sort({ createdAt: 1 });
+      }
     }
     
     res.status(200).json({

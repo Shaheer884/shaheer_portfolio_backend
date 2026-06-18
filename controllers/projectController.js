@@ -39,8 +39,8 @@ const DEFAULT_PROJECTS = [
     description: "A real-time typing performance application that measures typing speed (WPM), accuracy, and error rate. Features include timer-based tests, performance tracking, leaderboard rankings, and detailed typing analytics to help users improve their typing skills.",
     tags: ["React", "Node.js", "Express.js", "MongoDB", "JWT"],
     featured: true,
-    githubLink: "https://github.com/Shaheer884",
-    liveLink: "https://demo.com"
+    githubLink: "https://github.com/Shaheer884/Typing_Speed_System_Frontend",
+    liveLink: "https://typing-speed-system-frontend.vercel.app/"
   }
 ];
 
@@ -65,6 +65,21 @@ exports.getProjects = async (req, res) => {
           {
             githubLink: "https://github.com/Shaheer884/AI_Quiz_System_Frontend",
             liveLink: "https://ai-quiz-system-frontend.vercel.app/register"
+          }
+        );
+        // Refresh project list after update
+        projects = await Project.find().sort({ createdAt: 1 });
+      }
+
+      // Ensure existing database entry for Typing Speed Test System is updated if it has outdated links
+      const typingSpeedSystem = projects.find(p => p.title === "Typing Speed Test System");
+      if (typingSpeedSystem && (typingSpeedSystem.githubLink === "https://github.com" || typingSpeedSystem.githubLink === "https://github.com/Shaheer884" || typingSpeedSystem.liveLink === "https://demo.com")) {
+        console.log('Updating Typing Speed Test System links in database...');
+        await Project.updateOne(
+          { title: "Typing Speed Test System" },
+          {
+            githubLink: "https://github.com/Shaheer884/Typing_Speed_System_Frontend",
+            liveLink: "https://typing-speed-system-frontend.vercel.app/"
           }
         );
         // Refresh project list after update

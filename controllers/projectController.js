@@ -11,12 +11,12 @@ const DEFAULT_PROJECTS = [
     liveLink: "https://ai-quiz-system-frontend.vercel.app/register"
   },
   {
-    title: "Auction Bidding System",
-    description: "Dynamic auction platform allowing users to create listings, place bids in real-time, and manage their auction activities.",
-    tags: ["PHP", "MySQL", "JavaScript", "Bootstrap"],
+    title: "Typing Speed Test System",
+    description: "A real-time typing performance application that measures typing speed (WPM), accuracy, and error rate. Features include timer-based tests, performance tracking, leaderboard rankings, and detailed typing analytics to help users improve their typing skills.",
+    tags: ["React", "Node.js", "Express.js", "MongoDB", "JWT"],
     featured: true,
-    githubLink: "https://github.com/Shaheer884",
-    liveLink: "https://demo.com"
+    githubLink: "https://github.com/Shaheer884/Typing_Speed_System_Frontend",
+    liveLink: "https://typing-speed-system-frontend.vercel.app/"
   },
   {
     title: "Chat Application",
@@ -29,18 +29,18 @@ const DEFAULT_PROJECTS = [
   {
     title: "E-Commerce Website",
     description: "Full-featured online shopping platform with product catalog, shopping cart, user accounts, and secure payment integration.",
-    tags: ["React", "Node.js", "MongoDB", "Stripe"],
+    tags: ["React", "Node.js", "MongoDB"],
     featured: true,
     githubLink: "https://github.com/Shaheer884",
     liveLink: "https://demo.com"
   },
   {
-    title: "Typing Speed Test System",
-    description: "A real-time typing performance application that measures typing speed (WPM), accuracy, and error rate. Features include timer-based tests, performance tracking, leaderboard rankings, and detailed typing analytics to help users improve their typing skills.",
-    tags: ["React", "Node.js", "Express.js", "MongoDB", "JWT"],
+    title: "Auction Bidding System",
+    description: "Dynamic auction platform allowing users to create listings, place bids in real-time, and manage their auction activities.",
+    tags: ["PHP", "MySQL", "Bootstrap"],
     featured: true,
-    githubLink: "https://github.com/Shaheer884/Typing_Speed_System_Frontend",
-    liveLink: "https://typing-speed-system-frontend.vercel.app/"
+    githubLink: "https://github.com/Shaheer884",
+    liveLink: "https://demo.com"
   }
 ];
 
@@ -82,6 +82,35 @@ exports.getProjects = async (req, res) => {
             liveLink: "https://typing-speed-system-frontend.vercel.app/"
           }
         );
+        // Refresh project list after update
+        projects = await Project.find().sort({ createdAt: 1 });
+      }
+
+      // Ensure correct relative order in the database for the default projects
+      const defaultTitles = [
+        "AI-Based Quiz System",
+        "Typing Speed Test System",
+        "Chat Application",
+        "E-Commerce Website",
+        "Auction Bidding System"
+      ];
+      
+      const currentDefaultOrder = projects
+        .filter(p => defaultTitles.includes(p.title))
+        .map(p => p.title);
+        
+      const isOrderCorrect = currentDefaultOrder.length === defaultTitles.length &&
+        currentDefaultOrder.every((title, index) => title === defaultTitles[index]);
+        
+      if (!isOrderCorrect) {
+        console.log('Correcting projects order in database...');
+        const baseTime = new Date("2026-06-18T10:00:00Z");
+        for (let i = 0; i < defaultTitles.length; i++) {
+          await Project.updateOne(
+            { title: defaultTitles[i] },
+            { createdAt: new Date(baseTime.getTime() + i * 60000) }
+          );
+        }
         // Refresh project list after update
         projects = await Project.find().sort({ createdAt: 1 });
       }

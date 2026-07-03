@@ -19,6 +19,14 @@ const DEFAULT_PROJECTS = [
     liveLink: "https://typing-speed-system-frontend.vercel.app/"
   },
   {
+    title: "Auction Bidding System",
+    description: "Dynamic auction platform allowing users to create listings, place bids in real-time, and manage their auction activities.",
+    tags: ["PHP", "MySQL", "Bootstrap"],
+    featured: true,
+    githubLink: "https://github.com/Shaheer884/Auction_Bidding_System",
+    liveLink: "https://myauctionapp.infinityfreeapp.com/index.php"
+  },
+  {
     title: "Chat Application",
     description: "Real-time messaging application built with Kotlin for Android. Features include user authentication, message encryption, and push notifications.",
     tags: ["Kotlin", "Firebase", "Android SDK"],
@@ -30,14 +38,6 @@ const DEFAULT_PROJECTS = [
     title: "E-Commerce Website",
     description: "Full-featured online shopping platform with product catalog, shopping cart, user accounts, and secure payment integration.",
     tags: ["React", "Node.js", "MongoDB"],
-    featured: true,
-    githubLink: "https://github.com/Shaheer884",
-    liveLink: "https://demo.com"
-  },
-  {
-    title: "Auction Bidding System",
-    description: "Dynamic auction platform allowing users to create listings, place bids in real-time, and manage their auction activities.",
-    tags: ["PHP", "MySQL", "Bootstrap"],
     featured: true,
     githubLink: "https://github.com/Shaheer884",
     liveLink: "https://demo.com"
@@ -86,13 +86,28 @@ exports.getProjects = async (req, res) => {
         projects = await Project.find().sort({ createdAt: 1 });
       }
 
+      // Ensure existing database entry for Auction Bidding System is updated if it has outdated links
+      const auctionSystem = projects.find(p => p.title === "Auction Bidding System");
+      if (auctionSystem && (auctionSystem.githubLink === "https://github.com" || auctionSystem.githubLink === "https://github.com/Shaheer884" || auctionSystem.liveLink === "https://demo.com")) {
+        console.log('Updating Auction Bidding System links in database...');
+        await Project.updateOne(
+          { title: "Auction Bidding System" },
+          {
+            githubLink: "https://github.com/Shaheer884/Auction_Bidding_System",
+            liveLink: "https://myauctionapp.infinityfreeapp.com/index.php"
+          }
+        );
+        // Refresh project list after update
+        projects = await Project.find().sort({ createdAt: 1 });
+      }
+
       // Ensure correct relative order in the database for the default projects
       const defaultTitles = [
         "AI-Based Quiz System",
         "Typing Speed Test System",
+        "Auction Bidding System",
         "Chat Application",
-        "E-Commerce Website",
-        "Auction Bidding System"
+        "E-Commerce Website"
       ];
       
       const currentDefaultOrder = projects

@@ -27,6 +27,14 @@ const DEFAULT_PROJECTS = [
     liveLink: "https://myauctionapp.infinityfreeapp.com/index.php"
   },
   {
+    title: "Typing Speed Test System",
+    description: "A real-time typing performance application that measures typing speed (WPM), accuracy, and error rate. Features include timer-based tests, performance tracking, leaderboard rankings, and detailed typing analytics to help users improve their typing skills.",
+    tags: ["React", "Node.js", "Express.js", "MongoDB", "JWT"],
+    featured: true,
+    githubLink: "https://github.com/Shaheer884/Typing_Speed_System_Frontend",
+    liveLink: "https://typing-speed-system-frontend.vercel.app/"
+  },
+  {
     title: "Chat Application",
     description: "Real-time messaging application built with Kotlin for Android. Features include user authentication, message encryption, and push notifications.",
     tags: ["Kotlin", "Firebase", "Android SDK"],
@@ -63,12 +71,30 @@ exports.getProjects = async (req, res) => {
         projects = await Project.find().sort({ createdAt: 1 });
       }
 
-      // Ensure "Typing Speed Test System" is deleted from the database
+      // Ensure existing database entry for Typing Speed Test System is updated or re-created if missing
       const typingSpeedSystem = projects.find(p => p.title === "Typing Speed Test System");
-      if (typingSpeedSystem) {
-        console.log('Deleting Typing Speed Test System from database...');
-        await Project.deleteOne({ title: "Typing Speed Test System" });
-        // Refresh project list after delete
+      if (!typingSpeedSystem) {
+        console.log('Re-creating Typing Speed Test System in database...');
+        await Project.create({
+          title: "Typing Speed Test System",
+          description: "A real-time typing performance application that measures typing speed (WPM), accuracy, and error rate. Features include timer-based tests, performance tracking, leaderboard rankings, and detailed typing analytics to help users improve their typing skills.",
+          tags: ["React", "Node.js", "Express.js", "MongoDB", "JWT"],
+          featured: true,
+          githubLink: "https://github.com/Shaheer884/Typing_Speed_System_Frontend",
+          liveLink: "https://typing-speed-system-frontend.vercel.app/"
+        });
+        // Refresh project list after create
+        projects = await Project.find().sort({ createdAt: 1 });
+      } else if (typingSpeedSystem.githubLink === "https://github.com" || typingSpeedSystem.githubLink === "https://github.com/Shaheer884" || typingSpeedSystem.liveLink === "https://demo.com") {
+        console.log('Updating Typing Speed Test System links in database...');
+        await Project.updateOne(
+          { title: "Typing Speed Test System" },
+          {
+            githubLink: "https://github.com/Shaheer884/Typing_Speed_System_Frontend",
+            liveLink: "https://typing-speed-system-frontend.vercel.app/"
+          }
+        );
+        // Refresh project list after update
         projects = await Project.find().sort({ createdAt: 1 });
       }
 
@@ -107,6 +133,7 @@ exports.getProjects = async (req, res) => {
         "AI-Based Quiz System",
         "E-Commerce Website",
         "Auction Bidding System",
+        "Typing Speed Test System",
         "Chat Application"
       ];
       

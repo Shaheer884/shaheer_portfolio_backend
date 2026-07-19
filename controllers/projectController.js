@@ -27,6 +27,14 @@ const DEFAULT_PROJECTS = [
     liveLink: "https://myauctionapp.infinityfreeapp.com/index.php"
   },
   {
+    title: "Social Media Platform",
+    description: "A modern, full-featured social media platform built using the MERN stack. Features include user profiles, post creation with images, real-time messaging, likes, comments, user follow networks, and a sleek responsive UI.",
+    tags: ["MongoDB", "Express.js", "React.js", "Node.js", "JWT"],
+    featured: true,
+    githubLink: "https://github.com/Shaheer884/Social_Media_Platform_Frontend",
+    liveLink: "https://social-media-platform-frontend-nine.vercel.app/register"
+  },
+  {
     title: "Typing Speed Test System",
     description: "A real-time typing performance application that measures typing speed (WPM), accuracy, and error rate. Features include timer-based tests, performance tracking, leaderboard rankings, and detailed typing analytics to help users improve their typing skills.",
     tags: ["React", "Node.js", "Express.js", "MongoDB", "JWT"],
@@ -65,6 +73,33 @@ exports.getProjects = async (req, res) => {
           {
             githubLink: "https://github.com/Shaheer884/AI_Quiz_System_Frontend",
             liveLink: "https://ai-quiz-system-frontend.vercel.app/register"
+          }
+        );
+        // Refresh project list after update
+        projects = await Project.find().sort({ createdAt: 1 });
+      }
+
+      // Ensure existing database entry for Social Media Platform is updated or re-created if missing
+      const socialMediaPlatform = projects.find(p => p.title === "Social Media Platform");
+      if (!socialMediaPlatform) {
+        console.log('Re-creating Social Media Platform in database...');
+        await Project.create({
+          title: "Social Media Platform",
+          description: "A modern, full-featured social media platform built using the MERN stack. Features include user profiles, post creation with images, real-time messaging, likes, comments, user follow networks, and a sleek responsive UI.",
+          tags: ["MongoDB", "Express.js", "React.js", "Node.js", "JWT"],
+          featured: true,
+          githubLink: "https://github.com/Shaheer884/Social_Media_Platform_Frontend",
+          liveLink: "https://social-media-platform-frontend-nine.vercel.app/register"
+        });
+        // Refresh project list after create
+        projects = await Project.find().sort({ createdAt: 1 });
+      } else if (socialMediaPlatform.githubLink !== "https://github.com/Shaheer884/Social_Media_Platform_Frontend" || socialMediaPlatform.liveLink !== "https://social-media-platform-frontend-nine.vercel.app/register") {
+        console.log('Updating Social Media Platform links in database...');
+        await Project.updateOne(
+          { title: "Social Media Platform" },
+          {
+            githubLink: "https://github.com/Shaheer884/Social_Media_Platform_Frontend",
+            liveLink: "https://social-media-platform-frontend-nine.vercel.app/register"
           }
         );
         // Refresh project list after update
@@ -133,6 +168,7 @@ exports.getProjects = async (req, res) => {
         "AI-Based Quiz System",
         "E-Commerce Website",
         "Auction Bidding System",
+        "Social Media Platform",
         "Typing Speed Test System",
         "Chat Application"
       ];
